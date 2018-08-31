@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import URIGeekHunter from './containers/uri-geekhunter';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/style.css';
+
+ReactDOM.render(<URIGeekHunter />, document.getElementById('root'));
 registerServiceWorker();
