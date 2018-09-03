@@ -44,7 +44,7 @@ class URIGeekHunter extends Component {
     event.preventDefault();
 
     if (language === '' || code === '') {
-      alert('Selecione uma linguagem e codifique a solução para o problem.')
+      alert('Selecione uma linguagem e codifique a solução para o problema antes de submeter.')
     } else {
       this.setState({ feedback: false, loadingSolution: true });
 
