@@ -1,3 +1,14 @@
+.flex-center {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+.vh-100 {
+  min-height: 100vh;
+}
+
 .margin-top-10 {
   margin-top: 10px;
 }
@@ -37,6 +48,8 @@
 .code-editor {
   height: 300px;
   width: 100%;
+
+  padding: 10px;
 
   border-radius: 2.5px;
   border-color: rgb(206, 212, 218);

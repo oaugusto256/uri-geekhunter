@@ -1,13 +1,50 @@
 import React, { Component } from "react";
-import { CLIENT_ID, CLIENT_SECRET } from "../config/const.js";
+import { SyncLoader } from 'react-spinners';
+import { CLIENT_ID, CLIENT_SECRET } from "../config/const";
 import axios from "axios";
 
 class URIGeekHunter extends Component {
-  onSubmit() {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      code: '',
+      language: '',
+      result: '',
+      loading: true,
+      loadingResult: false,
+
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeLanguage = this.handleChangeLanguage.bind(this);
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }, 1000);
+  }
+
+  handleChange(event) {
+    this.setState({ code: event.target.value });
+  }
+
+  handleChangeLanguage(event) {
+    this.setState({ language: event.target.value });
+  }
+
+  handleSubmit(event) {
+    console.log(this.state);
+
+    event.preventDefault();
+
     var program = {
-      script: '<?php print("hello world"); ?>',
-      language: "php",
-      versionIndex: "0",
+      script: this.state.code,
+      stdin: 100.64,
+      language: this.state.language,
+      versionIndex: "1",
       clientId: CLIENT_ID,
       clientSecret: CLIENT_SECRET
     };
@@ -17,16 +54,30 @@ class URIGeekHunter extends Component {
       url: "https://api.jdoodle.com/v1/execute",
       headers: { 'Content-Type': 'application/json' }, 
       data: program
-    }).then(data => {
-      console.log( data );
+    }).then(success => {
+      console.log( success.data );
     }).catch(error => {
       console.log({ error });
     });
   }
 
   render() {
+    if(this.state.loading) {
+      return (
+        <div className="container vh-100">
+          <div className="flex-center vh-100">
+            <SyncLoader
+              size={15}
+              sizeUnit={"px"}
+              color={'#494949'}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
-      <div className="container">
+      <div className="container animated fadeIn">
         <div className="jumbotron margin-top-40">
           <div className="row">
             <div className="col-lg-12">
@@ -132,28 +183,28 @@ class URIGeekHunter extends Component {
             </div>
             <div className="col-lg-6">
               <p className="text-14 text-bold text-uppercase">Linguagem</p>
-              <select className="custom-select">
+              <select value={this.state.language} onChange={this.handleChangeLanguage} className="custom-select">
                 <option>Escolha uma linguagem...</option>
-                <option value="c">C</option>
-                <option value="cplusplus">C++</option>
+                <option value="cpp">C++</option>
                 <option value="python3">Python3</option>
-                <option value="php">PHP</option>
                 <option value="java">Java</option>
               </select>
             </div>
             <div className="col-lg-12 margin-top-20">
               <p className="text-14 text-bold text-uppercase">Código fonte</p>
-              <textarea className="margin-top-10 code-editor" />
-              <div className="row margin-top-10">
-                <div className="col-lg-9" />
-                <div className="col-lg-3">
-                  <button 
-                    onClick={() => {this.onSubmit()}}
-                    className="btn btn-block">
-                      Submeter
-                  </button>
+              <form onSubmit={this.handleSubmit}>
+                <textarea placeholder={"Codifique a solução proposta..."} value={this.state.code} onChange={this.handleChange} className="margin-top-10 code-editor" />
+                <div className="row margin-top-10">
+                  <div className="col-lg-9" />
+                  <div className="col-lg-3">
+                    <input
+                      type="submit"
+                      value="Submeter"
+                      className="btn btn-block"
+                    />
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
         </div>
