@@ -1,9 +1,12 @@
 # uri-geekhunter
 
-URI Geekhunter is a project to show my skills for a Front-end job opportunity at "Geekhunter".
+:computer: URI Geekhunter is a project to show my skills for a Front-end job opportunity at "Geekhunter".
 
 ## Live 
 
+<p align="center">
+  <img src="http://res.cloudinary.com/oaugusto/image/upload/v1535996001/uri-geekhunter.png" width="500px">
+</p>
 You can use and access the project at: https://tavioalves.github.io/uri-geekhunter
 
 ## How to use
