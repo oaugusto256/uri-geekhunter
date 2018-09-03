@@ -9,10 +9,13 @@ class URIGeekHunter extends Component {
 
     this.state = {
       code: '',
-      language: '',
       result: '',
+      language: '',
+      feedbackMessage: '',
+      feedbackStyle: 'alert-success',
       loading: true,
-      loadingResult: false,
+      feedback: false,
+      loadingSolution: false,
 
     };
 
@@ -36,33 +39,100 @@ class URIGeekHunter extends Component {
   }
 
   handleSubmit(event) {
-    console.log(this.state);
-
+    const { language, code } = this.state;
+    let randValue =  2; //Math.floor((Math.random() * 100) + 1);
     event.preventDefault();
 
-    var program = {
-      script: this.state.code,
-      stdin: 100.64,
-      language: this.state.language,
-      versionIndex: "1",
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET
-    };
+    if (language === '' || code === '') {
+      alert('Selecione uma linguagem e codifique a solução para o problem.')
+    } else {
+      this.setState({ feedback: false, loadingSolution: true });
 
-    axios({
-      method: "POST",
-      url: "https://api.jdoodle.com/v1/execute",
-      headers: { 'Content-Type': 'application/json' }, 
-      data: program
-    }).then(success => {
-      console.log( success.data );
-    }).catch(error => {
-      console.log({ error });
-    });
+      var program = {
+        stdin: randValue,
+        script: this.state.code,
+        language: this.state.language,
+        versionIndex: "1",
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET
+      };
+
+      axios({
+        method: "POST",
+        url: "https://cors-anywhere.herokuapp.com/https://api.jdoodle.com/v1/execute",
+        headers: { 'Access-Control-Allow-Origin': '*' },
+        data: program
+      }).then(success => {       
+        let result = (randValue*randValue*3.14159).toFixed(4);
+        
+        // eslint-disable-next-line
+        if(result == parseFloat(success.data.output)) {        
+          this.setState({
+            feedback: true,
+            feedbackStyle: 'alert-success',
+            feedbackMessage: "Solução proposta aceita!",
+            loadingSolution: false
+          });
+        } else {
+          this.setState({
+            feedback: true,
+            feedbackStyle: 'alert-danger',
+            feedbackMessage: "Solução proposta não foi aceita!",
+            loadingSolution: false
+          });
+        }
+      }).catch(error => {
+        console.log({ error });
+
+        this.setState({
+          feedback: true,
+          feedbackStyle: 'alert-danger',
+          feedbackMessage: "Houve um erro na sua solicitação, tente novamente mais tarde.",
+          loadingSolution: false
+        });
+      });
+    }
+
+
+  }
+
+  renderFeedback() {
+    if (this.state.feedback) {
+      return (
+        <div className="animated fadeIn">
+          <div className={`alert ${this.state.feedbackStyle}`} role="alert">
+            {this.state.feedbackMessage}
+          </div>
+        </div>
+
+      )
+    }
+  }
+
+  renderSolutionLoading() {
+    if (this.state.loadingSolution) {
+      return (
+        <div className="animated fadeIn flex-center padding-10">
+          <SyncLoader
+            size={10}
+            sizeUnit={"px"}
+            color={'#494949'}
+          />
+        </div>
+      );
+    }
   }
 
   render() {
-    if(this.state.loading) {
+    const { language, code } = this.state;
+
+    let btnStyle = 'btn-disabled';
+
+    if (language !== '' && code !== '') {
+      btnStyle = '';
+    }
+
+    if (this.state.loading) {
       return (
         <div className="container vh-100">
           <div className="flex-center vh-100">
@@ -117,8 +187,7 @@ class URIGeekHunter extends Component {
             <div className="col-lg-6">
               <p className="text-14 text-bold text-uppercase">Saída</p>
               <p className="text-14">
-                Apresentar a mensagem "A=" seguido pelo valor da variável area,
-                conforme exemplo abaixo, com 4 casas após o ponto decimal.
+                Apresentar o resultado da area conforme exemplo abaixo, com 4 casas após o ponto decimal.
                 Utilize variáveis de dupla precisão (double). Como todos os
                 problemas, não esqueça de imprimir o fim de linha após o
                 resultado, caso contrário, você receberá "Presentation Error".
@@ -156,13 +225,13 @@ class URIGeekHunter extends Component {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>A=12.5664</td>
+                    <td>12.5664</td>
                   </tr>
                   <tr>
-                    <td>A=31819.3103</td>
+                    <td>31819.3103</td>
                   </tr>
                   <tr>
-                    <td>A=70685.7750</td>
+                    <td>70685.7750</td>
                   </tr>
                 </tbody>
               </table>
@@ -187,10 +256,11 @@ class URIGeekHunter extends Component {
                 <option>Escolha uma linguagem...</option>
                 <option value="cpp">C++</option>
                 <option value="python3">Python3</option>
-                <option value="java">Java</option>
               </select>
             </div>
             <div className="col-lg-12 margin-top-20">
+              {this.renderFeedback()}
+              {this.renderSolutionLoading()}
               <p className="text-14 text-bold text-uppercase">Código fonte</p>
               <form onSubmit={this.handleSubmit}>
                 <textarea placeholder={"Codifique a solução proposta..."} value={this.state.code} onChange={this.handleChange} className="margin-top-10 code-editor" />
@@ -200,7 +270,7 @@ class URIGeekHunter extends Component {
                     <input
                       type="submit"
                       value="Submeter"
-                      className="btn btn-block"
+                      className={`btn btn-block ${btnStyle}`}
                     />
                   </div>
                 </div>
