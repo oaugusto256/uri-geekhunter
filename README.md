@@ -5,7 +5,7 @@
 ## Live 
 
 <p align="center">
-  <img src="http://res.cloudinary.com/oaugusto/image/upload/v1535996001/uri-geekhunter.pngg" width="500px">
+  <img src="http://res.cloudinary.com/oaugusto/image/upload/v1535996001/uri-geekhunter.png" width="500px">
 </p>
 You can use and access the project at: https://tavioalves.github.io/uri-geekhunter
 
