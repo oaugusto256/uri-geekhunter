@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { SyncLoader } from 'react-spinners';
+import { BarLoader } from 'react-spinners';
 import { CLIENT_ID, CLIENT_SECRET } from "../config/const";
 import axios from "axios";
 
@@ -113,7 +113,7 @@ class URIGeekHunter extends Component {
     if (this.state.loadingSolution) {
       return (
         <div className="animated fadeIn flex-center padding-10">
-          <SyncLoader
+          <BarLoader
             size={10}
             sizeUnit={"px"}
             color={'#494949'}
@@ -136,7 +136,7 @@ class URIGeekHunter extends Component {
       return (
         <div className="container vh-100">
           <div className="flex-center vh-100">
-            <SyncLoader
+            <BarLoader
               size={15}
               sizeUnit={"px"}
               color={'#494949'}
